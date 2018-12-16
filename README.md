@@ -19,9 +19,23 @@ make build
 make run
 ```
 
+## How-to launch tests
+```shell
+make test
+```
+
 ## How-to test the API
 
 See specs/api.yaml for a detailed description of the API, following OpenAPI specification
+
+## Third-party libraries
+
+The exercice doesn't advise to use third-party libraries,
+so here everything is done using go standard libs.
+Otherwise, the following libraries could be helpful:
+- a router like gorilla/mux or gin-gonic/gin - I personnally would recommend gin for its ease of use
+- a tester lib like stretchr/testify, as it brings mock features, the ability to assert or require,
+  and it increases lisibility in tests which is crucial in my opinion
 
 
 ## Open questions

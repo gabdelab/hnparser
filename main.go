@@ -1,9 +1,12 @@
 package main
 
 import (
-	"fmt"
+    "log"
+    "net/http"
 )
 
 func main() {
-	fmt.Println("running")
+    http.HandleFunc("/1/count/", CountHandler)
+    http.HandleFunc("/1/popular/", PopularHandler)
+    log.Fatal(http.ListenAndServe(":8080", nil))
 }

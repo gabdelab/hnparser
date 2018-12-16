@@ -3,3 +3,6 @@ build:
 
 run:
 	./hnparser
+
+test:
+	go test ./...
