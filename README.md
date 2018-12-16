@@ -4,7 +4,9 @@ This projects aims at building a go service that can extract most frequent reque
 
 ## Requirements
 
-Have go installed on your machine https://golang.org/doc/install
+Have go and dep installed on your machine:
+- https://golang.org/doc/install
+- https://github.com/golang/dep
 
 
 ## How-to build
