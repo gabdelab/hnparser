@@ -46,5 +46,5 @@ func Test_PopularHandler_returns_200(t *testing.T) {
 	resp := w.Result()
 	body, _ := ioutil.ReadAll(resp.Body)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	assert.Equal(t, "", string(body))
+	assert.Equal(t, "null\n", string(body))
 }

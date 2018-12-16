@@ -3,6 +3,7 @@ package main
 import (
     "fmt"
     "regexp"
+    "sort"
     "strconv"
 
     "github.com/pkg/errors"
@@ -66,13 +67,13 @@ var (
     withYears   = regexp.MustCompile(`^\d{4}`)
 )
 
-// getCounterFromEntry returns the number of different entries
+// getMatchingRoutes returns the number of different entries
 // belonging to a given date
 //
 // It has two main purposes:
 // - find out what level of struct we have to inspect, by parsing the parameter
-// - count the number of entries
-func getCounterFromEntry(logs logs, date string) (int, error) {
+// - create the subset of entries that will be counted
+func getMatchingRoutes(logs logs, date string) (map[string]int, error) {
     urls := map[string]int{}
 
     switch {
@@ -88,9 +89,9 @@ func getCounterFromEntry(logs logs, date string) (int, error) {
         val, ok := logs[year][month][day][hour][minute][second]
         if !ok {
             fmt.Println("not found, count is 0")
-            return 0, nil
+            return urls, nil
         }
-        return len(val), nil
+        return val, nil
     case withMinutes.FindString(date) == date:
         year, _ := strconv.Atoi(date[0:4])
         month, _ := strconv.Atoi(date[5:7])
@@ -100,10 +101,10 @@ func getCounterFromEntry(logs logs, date string) (int, error) {
         val, ok := logs[year][month][day][hour][minute]
         if !ok {
             fmt.Println("not found, count is 0")
-            return 0, nil
+            return urls, nil
         }
         addRoutesFromSecondsToList(urls, val)
-        return len(urls), nil
+        return urls, nil
 
     case withHours.FindString(date) == date:
         year, _ := strconv.Atoi(date[0:4])
@@ -113,10 +114,10 @@ func getCounterFromEntry(logs logs, date string) (int, error) {
         val, ok := logs[year][month][day][hour]
         if !ok {
             fmt.Println("not found, count is 0")
-            return 0, nil
+            return urls, nil
         }
         addRoutesFromMinutesToList(urls, val)
-        return len(urls), nil
+        return urls, nil
 
     case withDays.FindString(date) == date:
         year, _ := strconv.Atoi(date[0:4])
@@ -125,10 +126,10 @@ func getCounterFromEntry(logs logs, date string) (int, error) {
         val, ok := logs[year][month][day]
         if !ok {
             fmt.Println("not found, count is 0")
-            return 0, nil
+            return urls, nil
         }
         addRoutesFromHoursToList(urls, val)
-        return len(urls), nil
+        return urls, nil
 
     case withMonths.FindString(date) == date:
         year, _ := strconv.Atoi(date[0:4])
@@ -136,22 +137,52 @@ func getCounterFromEntry(logs logs, date string) (int, error) {
         val, ok := logs[year][month]
         if !ok {
             fmt.Println("not found, count is 0")
-            return 0, nil
+            return urls, nil
         }
         addRoutesFromDaysToList(urls, val)
-        return len(urls), nil
+        return urls, nil
 
     case withYears.FindString(date) == date:
         year, _ := strconv.Atoi(date[0:4])
         val, ok := logs[year]
         if !ok {
             fmt.Println("not found, count is 0")
-            return 0, nil
+            return urls, nil
         }
         addRoutesFromMonthsToList(urls, val)
-        return len(urls), nil
+        return urls, nil
 
     default:
-        return 0, errors.New("invalid date format")
+        return urls, errors.New("invalid date format")
     }
+}
+
+func getCounterFromEntry(logs logs, date string) (int, error) {
+    matchingRoutes, err := getMatchingRoutes(logs, date)
+    if err != nil {
+        return 0, errors.Wrap(err, "failed to get counter from entry")
+    }
+    return len(matchingRoutes), nil
+}
+
+func getTopQueriesFromEntry(logs logs, date string, limit int) ([]Query, error) {
+    matchingRoutes, err := getMatchingRoutes(logs, date)
+    if err != nil {
+        return nil, errors.Wrap(err, "failed to get counter from entry")
+    }
+
+    var ss []Query
+    for key, value := range matchingRoutes {
+        ss = append(ss, Query{Query: key, Counter: value})
+    }
+
+    sort.Slice(ss, func(i, j int) bool {
+        return ss[i].Counter > ss[j].Counter
+    })
+
+    if limit == 0 {
+        return ss, nil
+    }
+
+    return ss[0:limit], nil
 }
