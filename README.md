@@ -51,6 +51,12 @@ Otherwise, the following libraries could be helpful:
 
 ## Open questions
 
+### Should we consider the fact that the results are sorted ?
+
+I think it's not something we should rely on. It could reduce computation times, both when starting
+and when getting queries, but we probably want the product to be more resilient than this.
+
+
 ### How should we handle empty results ?
 
 I tend to think that returning 404s on empty results is a bad practice, as it prevents the
