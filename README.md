@@ -27,6 +27,11 @@ Or:
 ./hnparser -file-path <my_file.tsv>
 ```
 
+The port is also configurable:
+```shell
+./hnparser -file-path <my_file.tsv> -port 8888
+```
+
 ## How-to launch tests
 ```shell
 make test
