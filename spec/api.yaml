@@ -26,7 +26,7 @@ paths:
           type: string
           description: |
             Date prefix against which we should match the queries.
-            It should match any beginning of this format yyyy-MM-dd HH:mm:ss
+            It should match any beginning of an ISO8601 formatting (yyyy-MM-dd HH:mm:ss)
       responses:
         200:
           description: Valid query, returning the corresponding JSON
@@ -56,7 +56,7 @@ paths:
           type: string
           description: |
             Date prefix against which we should match the queries.
-            It should match any beginning of this format yyyy-MM-dd HH:mm:ss
+            It should match any beginning of an ISO8601 formatting (yyyy-MM-dd HH:mm:ss)
         - in: query
           name: size
           type: integer

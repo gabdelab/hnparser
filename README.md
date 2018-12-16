@@ -44,6 +44,7 @@ so here everything is done using go standard libs, except:
 - github.com/stretchr/testify which allows to easily assert and require in tests.
   Basically this only provides helpers to reduce the amount of boilerplate code
   in go tests, which is crucial in my opinion
+
 Otherwise, the following libraries could be helpful:
 - a router like gorilla/mux or gin-gonic/gin - I personnally would recommend gin for its ease of use
 
