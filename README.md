@@ -49,6 +49,14 @@ Otherwise, the following libraries could be helpful:
 - a router like gorilla/mux or gin-gonic/gin - I personnally would recommend gin for its ease of use
 
 
+## TODO list
+
+- add more handlers tests, in particular some with real data
+- provide dockerfile for users who don't want to install Go
+- return JSON with error messages in case of user errors
+- the handlers tests should mock the usecase to test only the handler code
+
+
 ## Open questions
 
 ### Should we consider the fact that the results are sorted ?
@@ -64,7 +72,7 @@ monitoring systems to split between real user errors and missing data. So, my ch
 is to return 200s with empty body.
 For dates in the future, this is more questionable; it is really a client - server
 misalignment so it probably means the API or its implementation on client side is not clear
-enough; for these ones I'll tend to return a specific error (and 404 seems the best to me).
+enough; for these ones I could return a specific error (and 404 seems the best to me).
 
 
 ### How should we handle size > nb results ?
