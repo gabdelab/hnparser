@@ -8,56 +8,53 @@ import (
     "github.com/pkg/errors"
 )
 
-// addRouteToList adds all urls in routeLogs to myList if not present
-func addRoutesToList(myList []string, routeLogs routelogs) []string {
-    for route := range routeLogs {
-        isPresent := false
-        for _, registeredRoute := range myList {
-            if route == registeredRoute {
-                isPresent = true
-                break
-            }
-        }
-        if !isPresent {
-            myList = append(myList, route)
+// addRouteToList adds all urls in routeLogs to myMap if not present
+//
+// to achieve this fastly, we use maps with O(1) access
+func addRoutesToList(myMap map[string]int, routeLogs routelogs) {
+    for route, counter := range routeLogs {
+        _, ok := myMap[route]
+        if !ok {
+            myMap[route] = counter
+        } else {
+            myMap[route] += counter
         }
     }
-    return myList
 }
 
-func addRoutesFromSecondsToList(myList []string, secondLogs secondlogs) []string {
+func addRoutesFromSecondsToList(myMap map[string]int, secondLogs secondlogs) {
     for _, routes := range secondLogs {
-        myList = addRoutesToList(myList, routes)
+        addRoutesToList(myMap, routes)
     }
-    return myList
+    return
 }
 
-func addRoutesFromMinutesToList(myList []string, minuteLogs minutelogs) []string {
+func addRoutesFromMinutesToList(myMap map[string]int, minuteLogs minutelogs) {
     for _, seconds := range minuteLogs {
-        myList = addRoutesFromSecondsToList(myList, seconds)
+        addRoutesFromSecondsToList(myMap, seconds)
     }
-    return myList
+    return
 }
 
-func addRoutesFromHoursToList(myList []string, hourLogs hourlogs) []string {
+func addRoutesFromHoursToList(myMap map[string]int, hourLogs hourlogs) {
     for _, minutes := range hourLogs {
-        myList = addRoutesFromMinutesToList(myList, minutes)
+        addRoutesFromMinutesToList(myMap, minutes)
     }
-    return myList
+    return
 }
 
-func addRoutesFromDaysToList(myList []string, dayLogs daylogs) []string {
+func addRoutesFromDaysToList(myMap map[string]int, dayLogs daylogs) {
     for _, hours := range dayLogs {
-        myList = addRoutesFromHoursToList(myList, hours)
+        addRoutesFromHoursToList(myMap, hours)
     }
-    return myList
+    return
 }
 
-func addRoutesFromMonthsToList(myList []string, monthLogs monthlogs) []string {
+func addRoutesFromMonthsToList(myMap map[string]int, monthLogs monthlogs) {
     for _, days := range monthLogs {
-        myList = addRoutesFromDaysToList(myList, days)
+        addRoutesFromDaysToList(myMap, days)
     }
-    return myList
+    return
 }
 
 var (
@@ -76,7 +73,7 @@ var (
 // - find out what level of struct we have to inspect, by parsing the parameter
 // - count the number of entries
 func getCounterFromEntry(logs logs, date string) (int, error) {
-    urls := []string{}
+    urls := map[string]int{}
 
     switch {
     case withSeconds.FindString(date) == date:
@@ -105,7 +102,7 @@ func getCounterFromEntry(logs logs, date string) (int, error) {
             fmt.Println("not found, count is 0")
             return 0, nil
         }
-        urls = addRoutesFromSecondsToList(urls, val)
+        addRoutesFromSecondsToList(urls, val)
         return len(urls), nil
 
     case withHours.FindString(date) == date:
@@ -118,7 +115,7 @@ func getCounterFromEntry(logs logs, date string) (int, error) {
             fmt.Println("not found, count is 0")
             return 0, nil
         }
-        urls = addRoutesFromMinutesToList(urls, val)
+        addRoutesFromMinutesToList(urls, val)
         return len(urls), nil
 
     case withDays.FindString(date) == date:
@@ -130,7 +127,7 @@ func getCounterFromEntry(logs logs, date string) (int, error) {
             fmt.Println("not found, count is 0")
             return 0, nil
         }
-        urls = addRoutesFromHoursToList(urls, val)
+        addRoutesFromHoursToList(urls, val)
         return len(urls), nil
 
     case withMonths.FindString(date) == date:
@@ -141,7 +138,7 @@ func getCounterFromEntry(logs logs, date string) (int, error) {
             fmt.Println("not found, count is 0")
             return 0, nil
         }
-        urls = addRoutesFromDaysToList(urls, val)
+        addRoutesFromDaysToList(urls, val)
         return len(urls), nil
 
     case withYears.FindString(date) == date:
@@ -151,7 +148,7 @@ func getCounterFromEntry(logs logs, date string) (int, error) {
             fmt.Println("not found, count is 0")
             return 0, nil
         }
-        urls = addRoutesFromMonthsToList(urls, val)
+        addRoutesFromMonthsToList(urls, val)
         return len(urls), nil
 
     default:

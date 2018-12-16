@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/pkg/errors"
@@ -24,7 +25,7 @@ func parseLogs(filePath string, output logs) error {
 
 	// Use a csv reader with space as delimitor
 	reader := csv.NewReader(file)
-	reader.Comma = ' '
+	reader.Comma = '\t'
 
 	data, err := reader.ReadAll()
 	if err != nil {
@@ -43,15 +44,16 @@ func parseLogs(filePath string, output logs) error {
 // processLine processes a line from the tsv
 //
 // it is expected to look as is:
-// ["yyyy-mm-dd", "HH:mm:ss", "url"]
+// ["yyyy-mm-dd HH:mm:ss", "url"]
 // If the line is misformatted, this raises an error
 func processLine(logs logs, line []string) error {
-	if len(line) != 3 {
-		return errors.New("invalid line !")
+	if len(line) != 2 {
+		return errors.Errorf("invalid line %s %d", line, len(line))
 	}
 	// Parse date and time at once
 	// Expected dates are ISO8601, just convert to RFC 3339 for easier parsing
-	datetime := fmt.Sprintf("%sT%sZ", line[0], line[1])
+	splittedTime := strings.Split(line[0], " ")
+	datetime := fmt.Sprintf("%sT%sZ", splittedTime[0], splittedTime[1])
 	t, err := time.Parse(time.RFC3339, datetime)
 	if err != nil {
 		return errors.Errorf("invalid time %s", datetime)
@@ -77,6 +79,6 @@ func processLine(logs logs, line []string) error {
 		logs[t.Year()][int(t.Month())][t.Day()][t.Hour()][t.Minute()][t.Second()] = routelogs{}
 	}
 
-	logs[t.Year()][int(t.Month())][t.Day()][t.Hour()][t.Minute()][t.Second()][line[2]] += 1
+	logs[t.Year()][int(t.Month())][t.Day()][t.Hour()][t.Minute()][t.Second()][line[1]] += 1
 	return nil
 }

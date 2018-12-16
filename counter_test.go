@@ -7,21 +7,25 @@ import (
 )
 
 func Test_addRoutesToList_works_on_empty_list(t *testing.T) {
-    myList := []string{}
+    myMap := map[string]int{}
     routeLogs := map[string]int{"test": 2}
-    assert.Equal(t, addRoutesToList(myList, routeLogs), []string{"test"})
+    addRoutesToList(myMap, routeLogs)
+    assert.Equal(t, myMap, map[string]int{"test": 2})
 }
 
 func Test_addRoutesToList_can_add_two_elements(t *testing.T) {
-    myList := []string{}
+    myMap := map[string]int{}
     routeLogs := map[string]int{"test": 2, "toast": 3}
-    assert.Equal(t, len(addRoutesToList(myList, routeLogs)), 2)
+    addRoutesToList(myMap, routeLogs)
+    assert.Equal(t, len(myMap), 2)
 }
 
 func Test_addRoutesToList_doesnt_add_already_present_element(t *testing.T) {
-    myList := []string{"route1", "route2"}
+    myMap := map[string]int{"route1": 2, "route2": 10}
     routeLogs := map[string]int{"test": 2, "route2": 3}
-    assert.Equal(t, len(addRoutesToList(myList, routeLogs)), 3)
+    addRoutesToList(myMap, routeLogs)
+    assert.Equal(t, len(myMap), 3)
+    assert.Equal(t, myMap["route2"], 13)
 }
 
 func Test_getCounterFromEntry_works_on_empty_logs(t *testing.T) {
