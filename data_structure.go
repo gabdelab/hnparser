@@ -22,4 +22,3 @@ type hourlogs map[int]minutelogs
 type daylogs map[int]hourlogs
 type monthlogs map[int]daylogs
 type logs map[int]monthlogs
-

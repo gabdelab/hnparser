@@ -2,3 +2,4 @@ hnparser
 vendor/
 # This one is a relicate of using https://github.com/ivpusic/rerun
 application-build-*
+hn_logs.tsv
