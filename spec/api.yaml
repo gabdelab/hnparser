@@ -1,0 +1,98 @@
+swagger: "2.0"
+info:
+  description: "This service allows to get the most frequent request on HN search"
+  version: "1.0.0"
+  title: "HN Parser"
+basePath: "/1/queries"
+schemes:
+  - "https"
+  - "http"
+
+paths:
+
+  /count/{datePrefix}:
+    get:
+      summary: Get the number of distinct queries done during a specific time range
+      description: |
+        The specific time range means all dates that have the same prefix as datePrefix.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: datePrefix
+          required: true
+          type: string
+          description: |
+            Date prefix against which we should match the queries.
+            It should match any beginning of this format yyyy-MM-dd HH:mm:ss
+      responses:
+        200:
+          description: Valid query, returning the corresponding JSON
+          schema:
+            $ref: "#/definitions/Counter"
+        400:
+          description: The date has an invalid format
+        404:
+          description: No results, based on a client mistake, e.g. date in the future
+        500:
+          description: Internal error on server side
+
+  /popular/{datePrefix}:
+    get:
+      summary: Get the most popular queries done during a specific time range
+      description: |
+        The specific time range means all dates that have the same prefix as datePrefix.
+        There is also a size parameter to get only a specific number of results
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: datePrefix
+          required: true
+          type: string
+          description: |
+            Date prefix against which we should match the queries.
+            It should match any beginning of this format yyyy-MM-dd HH:mm:ss
+        - in: query
+          name: size
+          type: integer
+          description: Maximum number of popular responses
+      responses:
+        200:
+          description: Valid query, returning the corresponding JSON
+          schema:
+            $ref: "#/definitions/Popular"
+        400:
+          description: Bad request; for instance the date has an invalid format
+        404:
+          description: No results, based on a client mistake, e.g. date in the future
+        500:
+          description: Internal error on server side
+
+definitions:
+  Counter:
+    type: object
+    properties:
+      count:
+        type: integer
+        example: 8
+  Query:
+    type: object
+    properties:
+      query:
+        type: string
+        example: "www.google.com"
+      count:
+        type: integer
+        example: 10
+  Popular:
+    type: object
+    properties:
+      queries:
+        type: array
+        items:
+          $ref: "#/definitions/Query"
