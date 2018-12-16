@@ -15,8 +15,16 @@ make build
 
 ## How-to run
 
+Two options:
+
 ```shell
-make run
+HN_LOGS=<my_file.tsv> make run
+```
+
+Or:
+
+```shell
+./hnparser -file-path <my_file.tsv>
 ```
 
 ## How-to launch tests
@@ -31,11 +39,13 @@ See specs/api.yaml for a detailed description of the API, following OpenAPI spec
 ## Third-party libraries
 
 The exercice doesn't advise to use third-party libraries,
-so here everything is done using go standard libs.
+so here everything is done using go standard libs, except:
+- github.com/pkg/errors which allows to wrap errors in order to keep context
+- github.com/stretchr/testify which allows to easily assert and require in tests.
+  Basically this only provides helpers to reduce the amount of boilerplate code
+  in go tests, which is crucial in my opinion
 Otherwise, the following libraries could be helpful:
 - a router like gorilla/mux or gin-gonic/gin - I personnally would recommend gin for its ease of use
-- a tester lib like stretchr/testify, as it brings mock features, the ability to assert or require,
-  and it increases lisibility in tests which is crucial in my opinion
 
 
 ## Open questions

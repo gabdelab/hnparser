@@ -13,12 +13,12 @@ func CountHandler(w http.ResponseWriter, r *http.Request) {
     if date == "" {
         // Empty date, returning a 400
         w.WriteHeader(http.StatusBadRequest)
-        fmt.Printf("no date given")
+        fmt.Println("no date given")
         return
     }
 
     w.WriteHeader(http.StatusOK)
-    fmt.Printf("hello world")
+    fmt.Println("hello world")
 }
 
 func PopularHandler(w http.ResponseWriter, r *http.Request) {

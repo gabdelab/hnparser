@@ -1,4 +1,5 @@
 build:
+	dep ensure
 	go build
 
 run:

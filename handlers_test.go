@@ -5,6 +5,8 @@ import (
     "net/http"
     "net/http/httptest"
     "testing"
+
+    "github.com/stretchr/testify/assert"
 )
 
 func Test_CountHandler_returns_200(t *testing.T) {
@@ -16,12 +18,8 @@ func Test_CountHandler_returns_200(t *testing.T) {
 
     resp := w.Result()
     body, _ := ioutil.ReadAll(resp.Body)
-    if resp.StatusCode != 200 {
-        t.Error("expected a 200 status code")
-    }
-    if string(body) != "" {
-        t.Error("expected an empty body")
-    }
+    assert.Equal(t, http.StatusOK, resp.StatusCode)
+    assert.Equal(t, "", string(body))
 }
 
 func Test_CountHandler_returns_400_on_empty_date(t *testing.T) {
@@ -32,12 +30,9 @@ func Test_CountHandler_returns_400_on_empty_date(t *testing.T) {
 
     resp := w.Result()
     body, _ := ioutil.ReadAll(resp.Body)
-    if resp.StatusCode != 400 {
-        t.Errorf("expected a 400 status code, got %v", resp.StatusCode)
-    }
-    if string(body) != "" {
-        t.Error("expected an empty body")
-    }
+    assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+    assert.Equal(t, "", string(body))
+
 }
 
 func Test_PopularHandler_returns_200(t *testing.T) {
@@ -48,10 +43,6 @@ func Test_PopularHandler_returns_200(t *testing.T) {
 
     resp := w.Result()
     body, _ := ioutil.ReadAll(resp.Body)
-    if resp.StatusCode != 200 {
-        t.Error("expected a 200 status code")
-    }
-    if string(body) != "" {
-        t.Error("expected an empty body")
-    }
+    assert.Equal(t, http.StatusOK, resp.StatusCode)
+    assert.Equal(t, "", string(body))
 }
