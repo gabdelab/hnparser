@@ -77,9 +77,9 @@ func (h *Handler) Popular(w http.ResponseWriter, r *http.Request) {
 
 	limit, err := strconv.Atoi(limitParam)
 	if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			fmt.Println("invalid limit specified")
-			return
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Println("invalid limit specified")
+		return
 	}
 
 	// Get the popular queries corresponding to the corresponding entry
