@@ -43,6 +43,31 @@ make test
 
 See specs/api.yaml for a detailed description of the API, following OpenAPI specification
 
+
+## Code organization
+
+When starting the program, the file is loaded and parsed (see parser.go).
+Then, all HTTP requests are handled by handler.go, which gets all parameters and formats
+the response. The calculation are done in counter.go, and our data structures are shown in
+data_structures.go.
+It could be time to have a bit more organization in the repo, for instance
+```shell
+main.go
+http/
+   handlers.go
+   handlers_test.go
+usecases/
+   counter.go
+   counters_test.go
+   parser.go
+   parser_test.go
+model/
+   data_structures.go
+```
+I personally think the repo can be flat until it gets really big, which is in my opinion not the
+case yet.
+
+
 ## Third-party libraries
 
 The exercice doesn't advise to use third-party libraries,
