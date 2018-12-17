@@ -11,22 +11,33 @@ Have go and dep installed on your machine:
 
 ## How-to build
 
+Locally:
 ```shell
 make build
 ```
 
+Or with Docker:
+```shell
+make docker-build
+```
+
 ## How-to run
 
-Two options:
+Three options! With environment variable:
 
 ```shell
 HN_LOGS=<my_file.tsv> make run
 ```
 
-Or:
+Or by passing an arg in command-line:
 
 ```shell
 ./hnparser -file-path <my_file.tsv>
+```
+
+Or with Docker:
+```shell
+ docker run -v <my_file.tsv>:/usr/share/results.tsv -p 8080:8080 hnparser
 ```
 
 The port is also configurable:
@@ -84,7 +95,6 @@ Otherwise, the following libraries could be helpful:
 ## TODO list
 
 - add more handlers tests, in particular some with real data
-- provide dockerfile for users who don't want to install Go
 - return JSON with error messages in case of user errors
 - the handlers tests should mock the usecase to test only the handler code
 - replace fmt.Println by a proper syslog logging
