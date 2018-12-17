@@ -165,10 +165,10 @@ func getCounterFromEntry(logs logs, date string) (int, error) {
 	return len(matchingRoutes), nil
 }
 
-func getTopQueriesFromEntry(logs logs, date string, limit int) ([]Query, error) {
+func getTopQueriesFromEntry(logs logs, date string, limit int) (Popular, error) {
 	matchingRoutes, err := getMatchingRoutes(logs, date)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to get counter from entry")
+		return Popular{}, errors.Wrap(err, "failed to get counter from entry")
 	}
 
 	// The results need to be sorted by counter, so that the "limit" parameter filters out
@@ -183,12 +183,11 @@ func getTopQueriesFromEntry(logs logs, date string, limit int) ([]Query, error) 
 	})
 
 	if limit == 0 {
-		return ss, nil
+		return Popular{ss}, nil
 	}
 
 	if limit > len(ss) {
-		return ss, nil
+		return Popular{ss}, nil
 	}
-
-	return ss[0:limit], nil
+	return Popular{ss[0:limit]}, nil
 }

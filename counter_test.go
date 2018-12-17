@@ -83,23 +83,23 @@ func Test_getCounterFromEntry_can_correctly_count_nominal_case(t *testing.T) {
 func Test_getTopQueriesFromEntry_with_no_limit_returns_all_results(t *testing.T) {
 	topQueries, err := getTopQueriesFromEntry(testLogs, "2018-11", 0)
 	assert.Nil(t, err)
-	assert.Equal(t, topQueries[0], Query{Counter: 10, Query: "google.com"})
-	assert.Equal(t, topQueries[1], Query{Counter: 1, Query: "other"})
-	assert.Equal(t, len(topQueries), 2)
+	assert.Equal(t, topQueries.Queries[0], Query{Counter: 10, Query: "google.com"})
+	assert.Equal(t, topQueries.Queries[1], Query{Counter: 1, Query: "other"})
+	assert.Equal(t, len(topQueries.Queries), 2)
 
 }
 
 func Test_getTopQueriesFromEntry_with_a_limit_returns_not_all_results(t *testing.T) {
 	topQueries, err := getTopQueriesFromEntry(testLogs, "2018-11", 1)
 	assert.Nil(t, err)
-	assert.Equal(t, topQueries[0], Query{Counter: 10, Query: "google.com"})
-	assert.Equal(t, len(topQueries), 1)
+	assert.Equal(t, topQueries.Queries[0], Query{Counter: 10, Query: "google.com"})
+	assert.Equal(t, len(topQueries.Queries), 1)
 }
 
 func Test_getTopQueriesFromEntry_with_higher_limit_returns_all_results(t *testing.T) {
 	topQueries, err := getTopQueriesFromEntry(testLogs, "2018-11", 3)
 	assert.Nil(t, err)
-	assert.Equal(t, topQueries[0], Query{Counter: 10, Query: "google.com"})
-	assert.Equal(t, topQueries[1], Query{Counter: 1, Query: "other"})
-	assert.Equal(t, len(topQueries), 2)
+	assert.Equal(t, topQueries.Queries[0], Query{Counter: 10, Query: "google.com"})
+	assert.Equal(t, topQueries.Queries[1], Query{Counter: 1, Query: "other"})
+	assert.Equal(t, len(topQueries.Queries), 2)
 }

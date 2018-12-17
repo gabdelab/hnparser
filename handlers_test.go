@@ -46,7 +46,7 @@ func Test_PopularHandler_returns_200(t *testing.T) {
 	resp := w.Result()
 	body, _ := ioutil.ReadAll(resp.Body)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	assert.Equal(t, "null\n", string(body))
+	assert.JSONEq(t, `{"queries":null}`, string(body))
 }
 
 func Test_PopularHandler_returns_400_on_empty_date(t *testing.T) {
@@ -109,5 +109,5 @@ func Test_PopularHandler_returns_200_with_results_limited(t *testing.T) {
 	resp := w.Result()
 	body, _ := ioutil.ReadAll(resp.Body)
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
-	assert.JSONEq(t, `[{"counter":10, "query": "google.com"}]`, string(body))
+	assert.JSONEq(t, `{"queries": [{"counter":10, "query": "google.com"}]}`, string(body))
 }

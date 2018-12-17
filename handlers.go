@@ -29,6 +29,10 @@ type Query struct {
 	Query   string `json:"query"`
 }
 
+type Popular struct {
+	Queries []Query `json:"queries"`
+}
+
 // Count implements the /count endpoint
 func (h *Handler) Count(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
@@ -71,7 +75,7 @@ func (h *Handler) Popular(w http.ResponseWriter, r *http.Request) {
 	// If no limit is set, use 0 as a limit, and return all results
 	limitParam := "0"
 	limits, ok := r.URL.Query()["limit"]
-	if ok && len(limits[0]) == 1 {
+	if ok && len(limits) == 1 {
 		limitParam = limits[0]
 	}
 
