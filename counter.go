@@ -171,6 +171,8 @@ func getTopQueriesFromEntry(logs logs, date string, limit int) ([]Query, error) 
 		return nil, errors.Wrap(err, "failed to get counter from entry")
 	}
 
+	// The results need to be sorted by counter, so that the "limit" parameter filters out
+	// correctly the least frequent requests.
 	var ss []Query
 	for key, value := range matchingRoutes {
 		ss = append(ss, Query{Query: key, Counter: value})
@@ -181,6 +183,10 @@ func getTopQueriesFromEntry(logs logs, date string, limit int) ([]Query, error) 
 	})
 
 	if limit == 0 {
+		return ss, nil
+	}
+
+	if limit > len(ss) {
 		return ss, nil
 	}
 

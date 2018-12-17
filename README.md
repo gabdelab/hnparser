@@ -62,6 +62,7 @@ Otherwise, the following libraries could be helpful:
 - provide dockerfile for users who don't want to install Go
 - return JSON with error messages in case of user errors
 - the handlers tests should mock the usecase to test only the handler code
+- replace fmt.Println by a proper syslog logging
 
 
 ## Open questions

@@ -42,39 +42,64 @@ func Test_getCounterFromEntry_fails_on_invalid_date(t *testing.T) {
 	assert.NotNil(t, err)
 }
 
-func Test_getCounterFromEntry_can_correctly_count_nominal_case(t *testing.T) {
-	logs := logs{
-		2018: {
-			11: {
-				12: {
-					17: {
-						52: {
-							59: {
-								"google.com": 3,
-							},
+var testLogs = logs{
+	2018: {
+		11: {
+			12: {
+				17: {
+					52: {
+						59: {
+							"google.com": 3,
 						},
 					},
-					19: {
-						11: {
-							13: {
-								"google.com": 7,
-							},
-							14: {
-								"other": 1,
-							},
+				},
+				19: {
+					11: {
+						13: {
+							"google.com": 7,
+						},
+						14: {
+							"other": 1,
 						},
 					},
 				},
 			},
 		},
-	}
-	total, err := getCounterFromEntry(logs, "2018-11")
+	},
+}
+
+func Test_getCounterFromEntry_can_correctly_count_nominal_case(t *testing.T) {
+	total, err := getCounterFromEntry(testLogs, "2018-11")
 	assert.Equal(t, 2, total)
 	assert.Nil(t, err)
-	total, err = getCounterFromEntry(logs, "2018-11-12 19")
+	total, err = getCounterFromEntry(testLogs, "2018-11-12 19")
 	assert.Equal(t, 2, total)
 	assert.Nil(t, err)
-	total, err = getCounterFromEntry(logs, "2018-11-12 19:11:13")
+	total, err = getCounterFromEntry(testLogs, "2018-11-12 19:11:13")
 	assert.Equal(t, 1, total)
 	assert.Nil(t, err)
+}
+
+func Test_getTopQueriesFromEntry_with_no_limit_returns_all_results(t *testing.T) {
+	topQueries, err := getTopQueriesFromEntry(testLogs, "2018-11", 0)
+	assert.Nil(t, err)
+	assert.Equal(t, topQueries[0], Query{Counter: 10, Query: "google.com"})
+	assert.Equal(t, topQueries[1], Query{Counter: 1, Query: "other"})
+	assert.Equal(t, len(topQueries), 2)
+
+}
+
+func Test_getTopQueriesFromEntry_with_a_limit_returns_not_all_results(t *testing.T) {
+	topQueries, err := getTopQueriesFromEntry(testLogs, "2018-11", 1)
+	assert.Nil(t, err)
+	assert.Equal(t, topQueries[0], Query{Counter: 10, Query: "google.com"})
+	assert.Equal(t, len(topQueries), 1)
+}
+
+func Test_getTopQueriesFromEntry_with_higher_limit_returns_all_results(t *testing.T) {
+	topQueries, err := getTopQueriesFromEntry(testLogs, "2018-11", 3)
+	assert.Nil(t, err)
+	assert.Equal(t, topQueries[0], Query{Counter: 10, Query: "google.com"})
+	assert.Equal(t, topQueries[1], Query{Counter: 1, Query: "other"})
+	assert.Equal(t, len(topQueries), 2)
 }
