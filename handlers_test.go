@@ -102,7 +102,7 @@ func Test_CountHandler_returns_200_with_counter(t *testing.T) {
 
 func Test_PopularHandler_returns_200_with_results_limited(t *testing.T) {
 	w := httptest.NewRecorder()
-	r := httptest.NewRequest("GET", "http://localhost/1/popular/2018?limit=1", nil)
+	r := httptest.NewRequest("GET", "http://localhost/1/popular/2018?size=1", nil)
 	handler := http.HandlerFunc(GetHandler(exampleLogs).Popular)
 	handler.ServeHTTP(w, r)
 

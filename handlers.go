@@ -74,7 +74,7 @@ func (h *Handler) Popular(w http.ResponseWriter, r *http.Request) {
 
 	// If no limit is set, use 0 as a limit, and return all results
 	limitParam := "0"
-	limits, ok := r.URL.Query()["limit"]
+	limits, ok := r.URL.Query()["size"]
 	if ok && len(limits) == 1 {
 		limitParam = limits[0]
 	}
