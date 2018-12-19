@@ -40,7 +40,7 @@ Or with Docker:
  docker run -v <my_file.tsv>:/usr/share/results.tsv -p 8080:8080 hnparser
 ```
 
-The port is also configurable:
+The port is also configurable (default is 8080):
 ```shell
 ./hnparser -file-path <my_file.tsv> -port 8888
 ```
@@ -53,6 +53,12 @@ make test
 ## How-to test the API
 
 See specs/api.yaml for a detailed description of the API, following OpenAPI specification
+
+Sample call:
+```shell
+curl "localhost:8080/1/counter/2015"
+curl "localhost:8080/1/popular/2015?size=1"
+```
 
 
 ## Code organization
